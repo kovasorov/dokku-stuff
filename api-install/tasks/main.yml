@@ -1,0 +1,38 @@
+---
+# tasks file for api-install
+- name: dokku apps:create dokku-api
+  dokku_app:
+    app: dokku-api
+
+- name: redis:create dokku-api
+  dokku_service_create:
+    name: dokku-api
+    service: redis
+
+- name: postgres:create dokku-api
+  dokku_service_create:
+    name: dokku-api
+    service: postgres
+
+- name: redis:link dokku-api dokku-api
+  dokku_service_link:
+    app: dokku-api
+    name: dokku-api
+    service: redis
+
+- name: postgres:link dokku-api dokku-api
+  dokku_service_link:
+    app: dokku-api
+    name: dokku-api
+    service: postgres
+
+- name: mount a path
+  dokku_storage:
+    app: dokku-api
+    mounts:
+      - /var/run/dokku-daemon:/var/run/dokku-daemon
+
+- name: dokku clone dokku-api
+  dokku_clone:
+    app: dokku-api
+    repository: https://github.com/dokku/dokku-api.git

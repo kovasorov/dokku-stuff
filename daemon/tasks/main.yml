@@ -1,0 +1,12 @@
+---
+# tasks file for daemon
+- name: dokku daemon download
+  get_url:
+    url: https://github.com/beydogan/dokku-daemon-go/releases/download/v0.1.1/dokku-daemon-go-linux64
+    dest: /opt
+    mode: '0755'
+- name: dokku daemon install
+  shell:
+    /opt/dokku-daemon-go-linux64 install
+- name: start dokku daemon
+  service: name=dokku-daemon state=started

@@ -1,0 +1,18 @@
+---
+- name: generate key and grab it
+  gather_facts: no
+  shell: dokku run dokku-api rake keys:generate
+  register: result
+
+  set_fact:
+    d_api_key: "{{ result.stdout | regex_search('API KEY: ([a-z0-9]+)', '\\1') }}"
+    d_api_secret: "{{ result.stdout | regex_search('API SECRET: ([a-z0-9]+)', '\\1') }}"
+
+- name: send key to backend
+  uri:
+    url: http://yourserver.ip/commands
+    method: GET
+    headers:
+      Api-Key: "{{ d_api_key }}"
+      Api-Secret: "{{ d_api_secret }}"
+# curl -i -H "Api-Key: d_api_key" -H "Api-Secret: d_api_secret" http://yourserver.ip:42143/commands
